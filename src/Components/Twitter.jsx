@@ -52,7 +52,6 @@ export default function Twitter() {
     const sorted = [...tweets].sort(
       (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
     );
-    console.log(sorted);
     setTweets(sorted);
   }, []);
 
