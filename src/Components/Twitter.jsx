@@ -1,31 +1,35 @@
 import TweetList from "./TweetList";
 import AddTweet from "./AddTweet";
 import { memo, useCallback, useState } from "react";
-const initialTweet = [
-  {
-    id: 1,
-    content: "this is first tweet",
-    likeCount: 3,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 2,
-    content: "this is second tweet",
-    likeCount: 4,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 3,
-    content: "this is third tweet",
-    likeCount: 5,
-    createdAt: new Date().toISOString(),
-  },
-];
 
-const memoisedAddTweet = memo(AddTweet);
+function getTweets() {
+  const initialTweet = [
+    {
+      id: 1,
+      content: "this is first tweet",
+      likeCount: 3,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: 2,
+      content: "this is second tweet",
+      likeCount: 4,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: 3,
+      content: "this is third tweet",
+      likeCount: 5,
+      createdAt: new Date().toISOString(),
+    },
+  ];
+  return initialTweet;
+}
+
+const MemoisedAddTweet = memo(AddTweet);
 
 export default function Twitter() {
-  const [tweets, setTweets] = useState(initialTweet);
+  const [tweets, setTweets] = useState(() => getTweets());
 
   const handleAddTweet = useCallback((text) => {
     const newTweets = [
@@ -38,7 +42,7 @@ export default function Twitter() {
       },
     ];
     setTweets(newTweets);
-  }, []);
+  }, [tweets]);
 
   const updateTweet = useCallback((text, id) => {
     setTweets((prevTweets) =>
@@ -46,18 +50,18 @@ export default function Twitter() {
         tweet.id === id ? { ...tweet, content: text } : tweet
       )
     );
-  }, []);
+  }, [tweets]);
 
   const sortTweets = useCallback(() => {
     const sorted = [...tweets].sort(
       (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
     );
     setTweets(sorted);
-  }, []);
+  }, [tweets]);
 
   return (
     <>
-      <memoisedAddTweet handleAddTweet={handleAddTweet} />
+      <MemoisedAddTweet handleAddTweet={handleAddTweet} />
       <button onClick={sortTweets}>Sort Tweet By Created At</button>
       <TweetList tweets={tweets} updateTweet={updateTweet} />
     </>
